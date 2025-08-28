@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html xmlns:th= "http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="/fragments/head :: head"></head>
+    <body>
+        <nav th:replace="/fragments/navbar :: nav"></nav>
+
+        <form th:action="@{/venta/vendido}" method="POST" enctype="multipart/form-data">
+
+            <h1 class="h3 mb-3 fw-normal">Ingresa Venta</h1>
+
+            <select name="tipo">
+                <option th:each="tipoV : ${tipo}"  th:text="${tipoV.tipo}" th:value="${tipoV.tipo}"  >
+                </option>
+            </select>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" id="nombre" placeholder="Monto" name="monto" th:value="${monto}">
+                <label for="nombre">Monto</label>
+            </div>
+            <br>
+            <button class="btn btn-primary w-100 py-2" type="submit">Registrar</button>
+            <button class="btn btn-primary w-100 py-2" type="button">
+                <a class="btn btn-primary w-100 py-2" th:href="@{/home/inicio}">Volver</a>
+            </button>
+
+
+            <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
+        </form>
+
+        <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    </body>
+</html>
