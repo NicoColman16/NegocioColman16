@@ -1,8 +1,5 @@
 package com.colman.negocio.Enum;
 
-import lombok.Data;
-
-
 public enum Rol {
     
     USER("User"),
