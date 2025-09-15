@@ -40,7 +40,7 @@ public List<Pedido> listar(){
     return lista;
 }
 @Transactional(readOnly = true)
-public void eliminar(String id){
+public void eliminar(Long id){
     Optional<Pedido> respuesta = pedidoRepositorio.findById(id);
     
     if(respuesta.isPresent()){

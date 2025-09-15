@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductoRepositorio extends JpaRepository<Producto,String> {
+public interface ProductoRepositorio extends JpaRepository<Producto,Long> {
     
     
     @Query ("SELECT p FROM Producto p WHERE p.nombre LIKE %:nombre% ")

@@ -4,7 +4,8 @@ public enum TipoVenta {
     
     EFECTIVO("Efectivo"),
     TARJETA("Tarjeta"),
-    VIRTUAL("Virtual"),
+    RECARGA("Recarga"),
+    TRANSFERENCIA("Transferencia"),
     BILLETERA("Billetera");
     
     private final String tipo;

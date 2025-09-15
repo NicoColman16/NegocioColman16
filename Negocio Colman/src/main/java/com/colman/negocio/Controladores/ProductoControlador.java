@@ -82,14 +82,14 @@ public class ProductoControlador {
     }
     
     @GetMapping("/modificar/{id}")
-    public String modificar(@PathVariable String id, ModelMap modelo){
+    public String modificar(@PathVariable Long id, ModelMap modelo){
         Producto producto = productoServicio.getOne(id);
         modelo.put("producto", producto);
         return "producto_modificar.html";
     }
     
     @PostMapping("/modificado/{id}")
-    public String modificado(@PathVariable String id,String nombre,Integer precioCosto,Integer precioVenta,ModelMap modelo){
+    public String modificado(@PathVariable Long id,String nombre,Integer precioCosto,Integer precioVenta,ModelMap modelo){
         try {
             productoServicio.Actualizar(nombre, precioCosto, precioVenta, id);
             return "redirect:/producto/lista";

@@ -1,7 +1,6 @@
 package com.colman.negocio.Servicios;
 
 import com.colman.negocio.Entidades.Producto;
-import com.colman.negocio.Enum.TipoProducto;
 import com.colman.negocio.Exception.MiException;
 import com.colman.negocio.Repositorio.ProductoRepositorio;
 import jakarta.transaction.Transactional;
@@ -33,12 +32,12 @@ public class ProductoServicio {
         
     }
     
-    public Producto getOne(String Id){
-        return productoRepositorio.getOne(Id);
+    public Producto getOne(Long Id){
+        return productoRepositorio.getById(Id);
     }
     
     @Transactional
-    public void Actualizar(String nombre, Integer precioCosto, Integer precioVenta, String id) throws MiException{
+    public void Actualizar(String nombre, Integer precioCosto, Integer precioVenta, Long id) throws MiException{
         
         Optional<Producto> respuesta = productoRepositorio.findById(id);
         

@@ -2,24 +2,23 @@ package com.colman.negocio.Entidades;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Date;
 
 import lombok.*;
 
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+@Table(name = "Producto")
 public class Producto {
     
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name="uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String nombre;

@@ -12,11 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/home")
 public class PortalControlador {
 
     @Autowired
@@ -24,7 +22,7 @@ public class PortalControlador {
 
     @GetMapping("/")
     public String Inicio() {
-        return "index.html";
+        return "inicio.html";
     }
 
     @GetMapping("/login")
@@ -55,7 +53,7 @@ public class PortalControlador {
 
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ROLE_ADMIN')")
     @GetMapping("/inicio")
     public String inicio(HttpSession session) {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");

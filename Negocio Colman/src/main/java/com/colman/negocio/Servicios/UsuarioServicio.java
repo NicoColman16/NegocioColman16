@@ -68,7 +68,7 @@ public class UsuarioServicio implements UserDetailsService{
     }
     
     @Transactional
-    public void modificarUsuario(String nombre, String mail, String contraseña, String contraseña2, String Id) throws MiException{
+    public void modificarUsuario(String nombre, String mail, String contraseña, String contraseña2, Long Id) throws MiException{
         Validar(nombre, mail, contraseña, contraseña2);
         
         Optional<Usuario> respuesta = usuarioRepositorio.findById(Id);
@@ -92,7 +92,7 @@ public class UsuarioServicio implements UserDetailsService{
         return lista;
     }
     
-    public Usuario getOne (String id){
+    public Usuario getOne (Long id){
         
         return usuarioRepositorio.getOne(id);
     }

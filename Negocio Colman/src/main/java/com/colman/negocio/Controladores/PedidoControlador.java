@@ -2,10 +2,7 @@ package com.colman.negocio.Controladores;
 
 import com.colman.negocio.Exception.MiException;
 import com.colman.negocio.Servicios.PedidoServicio;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,7 +42,7 @@ public class PedidoControlador {
     }
 
     @PostMapping("/eliminar/{id}")
-    public String eliminarPedido(@PathVariable String id, ModelMap modelo) {
+    public String eliminarPedido(@PathVariable Long id, ModelMap modelo) {
 
         pedidoServicio.eliminar(id);
 

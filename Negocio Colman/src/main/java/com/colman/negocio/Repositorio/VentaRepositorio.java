@@ -8,11 +8,20 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VentaRepositorio extends JpaRepository<Venta, String> {
+public interface VentaRepositorio extends JpaRepository<Venta, Long> {
     
-     @Query("SELECT SUM(v.monto) FROM Venta v WHERE v.fechaVenta = :fechaVenta")
+    @Query("SELECT SUM(v.monto) " +
+            "FROM Venta v " +
+            "WHERE v.fechaVenta = :fechaVenta")
     Long totalFechaVenta(@Param("fechaVenta") Date fechaVenta);
     
     @Query("SELECT SUM(v.monto) FROM Venta v WHERE DATE(v.fechaVenta) = :fechaVenta AND v.tipo = :tipo")
-    Integer totalByFechaVentaAndTipo(@Param("fechaVenta") Date fechaVenta, @Param("tipo") String tipo);
+    Long totalByFechaVentaAndTipo(@Param("fechaVenta") Date fechaVenta, @Param("tipo") String tipo);
+
+    @Query("SELECT COALESCE(SUM(v.monto), 0) " +
+           "FROM Venta v " +
+           "WHERE v.fechaVenta = :fechaVenta " +
+           "AND v.tipo <> 'Recarga'")
+    Long totalByFechaDia(@Param("fechaVenta") Date fechaVenta);
+
 }
