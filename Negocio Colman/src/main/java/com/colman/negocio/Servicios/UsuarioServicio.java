@@ -85,16 +85,12 @@ public class UsuarioServicio implements UserDetailsService{
     }
     
     @Transactional
-    public List<Usuario> listarUsuario(){
-        List<Usuario> lista = new ArrayList();
-        
-        lista= usuarioRepositorio.findAll();
-        return lista;
+    public List<Usuario> listarUsuario(){        
+        return usuarioRepositorio.findAll();
     }
     
     public Usuario getOne (Long id){
-        
-        return usuarioRepositorio.getOne(id);
+        return usuarioRepositorio.getReferenceById(id);
     }
     
     public void Validar (String nombre, String mail, String contraseña, String contraseña2) throws MiException{

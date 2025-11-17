@@ -36,7 +36,6 @@ public class VentaServicio {
             } else{
                 num = num + ((num*20)/100);
             }
-            System.out.println("FUNCA BIEN"/*Borrar despues */);
             venta2.setTipo("Efectivo");
             venta2.setMonto(num);
             venta2.setFechaVenta(fechaV2);
@@ -52,11 +51,7 @@ public class VentaServicio {
 
     @Transactional
     public List<Venta> listar() {
-        List<Venta> lista = new ArrayList();
-
-        lista = ventaRepositorio.findAll();
-
-        return lista;
+        return ventaRepositorio.findAll();
     }
 
     @Transactional

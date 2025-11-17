@@ -3,7 +3,6 @@ package com.colman.negocio.Servicios;
 import com.colman.negocio.Entidades.Pedido;
 import com.colman.negocio.Exception.MiException;
 import com.colman.negocio.Repositorio.PedidoRepositorio;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +33,10 @@ public void agregar(String nombre, Integer cantidad) throws MiException{
 
 
 @Transactional(readOnly = true)
-public List<Pedido> listar(){
-    List<Pedido> lista = new ArrayList();
-    lista = pedidoRepositorio.findAll();
-    return lista;
+public List<Pedido> listar() {
+    return pedidoRepositorio.findAll();
 }
+
 @Transactional(readOnly = true)
 public void eliminar(Long id){
     Optional<Pedido> respuesta = pedidoRepositorio.findById(id);

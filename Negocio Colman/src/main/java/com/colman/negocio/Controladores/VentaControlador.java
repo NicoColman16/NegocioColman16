@@ -4,7 +4,6 @@ import com.colman.negocio.Entidades.Venta;
 import com.colman.negocio.Enum.TipoVenta;
 import com.colman.negocio.Exception.MiException;
 import com.colman.negocio.Servicios.VentaServicio;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +46,7 @@ public class VentaControlador {
     @GetMapping("/lista")
     public String listarVenta(ModelMap modelo) {
         Date fecha = new Date();
-        List<Venta> venta = new ArrayList();
-        venta = ventaServicio.listar();
+        List<Venta> venta = ventaServicio.listar();
         modelo.addAllAttributes(venta);
         Long total = ventaServicio.totalVentaFecha(fecha);
         modelo.put("total", total);
@@ -60,14 +58,10 @@ public class VentaControlador {
     public String totalVenta(@RequestParam(required = false) Date fechas, @RequestParam(required = false) String tipo, ModelMap modelo) throws MiException {
 
         Date fecha = new Date();
-        List<Venta> venta = new ArrayList();
-        venta = ventaServicio.listar();
+        List<Venta> venta = ventaServicio.listar();
         modelo.addAllAttributes(venta);
-        Long total;
-        List<Venta> ventasTipo = new ArrayList();
-
-        total = ventaServicio.totalDia(fecha);
-        ventasTipo = ventaServicio.totalVentaTipo(fecha);
+        Long total = ventaServicio.totalDia(fecha);
+        List<Venta> ventasTipo = ventaServicio.totalVentaTipo(fecha);
 
         modelo.put("Venta", total);
         modelo.put("VentaTipo", ventasTipo);

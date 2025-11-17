@@ -27,4 +27,6 @@ public class Usuario {
     
     @Enumerated(EnumType.STRING)
     private Rol rol; 
+
+    
 }

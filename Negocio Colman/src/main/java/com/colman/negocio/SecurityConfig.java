@@ -19,67 +19,65 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsService;
+        private final UserDetailsServiceImpl userDetailsService;
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+        public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+                this.userDetailsService = userDetailsService;
+        }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("Entre aqui");
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/" ,"/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/", true)
-                )
-                .logout(logout -> logout.permitAll())
-                .build();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                System.out.println("Entre aqui");
+                return http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/", "/login", "/css/**", "/js/**").permitAll()
+                                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .permitAll()
+                                                .defaultSuccessUrl("/", true))
+                                .logout(logout -> logout.permitAll())
+                                .build();
+        }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(HttpSecurity http,
+                        PasswordEncoder passwordEncoder)
+                        throws Exception {
 
-    @Bean
-    UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-    UserDetails user = User.withUsername("admin")
-            .password(passwordEncoder.encode("1234"))
-            .roles("ADMIN")
-            .build();
-            System.out.println("LLegue aqui");
+                AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
-    UserDetails normal = User.withUsername("usuario")
-            .password(passwordEncoder.encode("1234"))
-            .roles("USER")
-            .build();
+                builder.userDetailsService(userDetailsService)
+                                .passwordEncoder(passwordEncoder);
 
-    return new InMemoryUserDetailsManager(user, normal);
+                return builder.build();
+        }
+
+        @Bean
+        UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+                UserDetails user = User.withUsername("admin")
+                                .password(passwordEncoder.encode("1234"))
+                                .roles("ADMIN")
+                                .build();
+                System.out.println("LLegue aqui");
+
+                UserDetails normal = User.withUsername("usuario")
+                                .password(passwordEncoder.encode("1234"))
+                                .roles("USER")
+                                .build();
+
+                return new InMemoryUserDetailsManager(user, normal);
+        }
 }
-}
-
-

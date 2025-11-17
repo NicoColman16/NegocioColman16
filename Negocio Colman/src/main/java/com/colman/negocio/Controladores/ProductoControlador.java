@@ -5,7 +5,6 @@ import com.colman.negocio.Enum.TipoProducto;
 import com.colman.negocio.Exception.MiException;
 import com.colman.negocio.Repositorio.ProductoRepositorio;
 import com.colman.negocio.Servicios.ProductoServicio;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,10 +55,8 @@ public class ProductoControlador {
     @GetMapping("/lista")
     public String listaProducto(ModelMap modelo) {
         modelo.put("tipos", TipoProducto.values());
-        List<Producto> lista = new ArrayList();
-        lista = productoServicio.Listar();
+        List<Producto> lista = productoServicio.Listar();
         modelo.put("lista", lista);
-
         return "listar_producto.html";
     }
 
