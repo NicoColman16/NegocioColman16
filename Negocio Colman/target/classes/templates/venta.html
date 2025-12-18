@@ -8,27 +8,34 @@
       <body>
         <nav th:replace="~{/fragments/navbar :: nav}"></nav>
 
-        <form th:action="@{/venta/vendido}" method="POST" enctype="multipart/form-data">
+        <form class="form-propio" th:action="@{/venta/vendido}" method="POST" enctype="multipart/form-data">
 
             <h1 class="h3 mb-3 fw-normal">Ingresa Venta</h1>
 
-            <select name="tipo">
+            <select name="tipo" class="form-propio">
                 <option th:each="tipoV : ${tipo}"  th:text="${tipoV.tipo}" th:value="${tipoV.tipo}"  >
                 </option>
             </select>
 
             <div class="form-floating">
-                <input type="text" class="form-control" id="nombre" placeholder="Monto" name="monto" th:value="${monto}">
+                <input type="text" class="form-control form-propio" id="nombre" placeholder="Monto" name="monto" th:value="${monto}">
                 <label for="nombre">Monto</label>
             </div>
             <br>
-            <button class="btn btn-primary w-100 py-2" type="submit">Registrar</button>
-            <button class="btn btn-primary w-100 py-2" type="button">
-                <a class="btn btn-primary w-100 py-2" th:href="@{/inicio}">Volver</a>
-            </button>
+           <div class="d-flex flex-column align-items-center gap-2"> 
+    
+<div class="grupo-botones-centrado"> 
+    
+    <button class="btn btn-primary btn-ancho-fijo" type="submit">
+        Registrar
+    </button>
+    
+    <button class="btn btn-primary btn-ancho-fijo" type="button">
+        <a class="btn btn-primary w-100" th:href="@{/}">Volver</a> 
+    </button>
 
+</div>
 
-            <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
         </form>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 

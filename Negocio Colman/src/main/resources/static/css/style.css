@@ -1,0 +1,53 @@
+body{
+    background-color: rgb(177, 177, 154);
+    
+}
+
+.propio{
+    background-color: yellow;
+    border-radius: 10px;
+    text-decoration: double;
+}
+
+.dropdown-menu{
+    background-color: rgb(217, 217, 43);
+}
+
+.dropdown-item{
+    border-radius: 10px;
+}
+
+.form-propio{
+    background-color: rgb(180, 234, 234);
+    border-radius: 10px ;
+}
+
+
+.btn-ancho-fijo {
+    width: auto !important; 
+
+    min-width: 250px; 
+}
+
+.grupo-botones-centrado {
+    display: flex;
+    flex-direction: column; /* Apila los botones verticalmente */
+    align-items: center;    /* Centra los botones horizontalmente */
+    gap: 10px;              /* Espacio entre los botones */
+}
+
+/* style.css */
+
+/* Cambia el color de fondo y el color del borde para todos los botones .btn-primary */
+.btn-primary {
+    background-color: #28a745 !important; /* Nuevo color de fondo (Verde) */
+    border-color: #28a745 !important;     /* Nuevo color del borde */
+    color: white;                         /* Asegura que el texto sea blanco */
+}
+
+/* Opcional: Cambiar el color al pasar el ratón (hover) */
+.btn-primary:hover {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+}
+
