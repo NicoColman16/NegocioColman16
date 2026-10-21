@@ -1,0 +1,28 @@
+<div class="sidebar" th:fragment="sidebar">
+  <div class="sidebar-header">
+    <i class="fa-solid fa-store"></i> El Patito
+  </div>
+  <ul class="sidebar-menu">
+    <li>
+      <a th:href="@{/}"><i class="fa-solid fa-gauge"></i> Tablero Principal</a>
+    </li>
+    <li>
+      <a th:href="@{/venta/inventario}"><i class="fa-solid fa-box"></i> Productos</a>
+    </li>
+    <li>
+      <a th:href="@{/venta/nuevo}"><i class="fa-solid fa-cart-shopping"></i> Ventas</a>
+    </li>
+    <li>
+      <a th:href="@{/compras}"><i class="fa-solid fa-bag-shopping"></i> Compras</a>
+    </li>
+    <li>
+      <a th:href="@{/venta/reportes}"><i class="fa-solid fa-chart-line"></i> Reportes</a>
+    </li>
+     <li>
+      <a th:href="@{/caja/movimientos}"><i class="fa-solid fa-money-bill-transfer"></i> Movimiento Caja</a>
+    </li>
+    <li>
+      <a th:href="@{/configuracion}"><i class="fa-solid fa-gear"></i> Configuración</a>
+    </li>
+  </ul>
+</div>

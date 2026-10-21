@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head xmlns:th= "http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Patito - Venta</title>
+  <!-- Iconos FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <head th:replace="~{/fragments/head :: head}"></head>
+  
+</head>
+<body>
+
+  <!-- Sidebar -->
+    <div th:replace="~{/fragments/sidebar :: div}"></div>
+
+
+  <!-- Contenido Principal -->
+  <div class="main-wrapper">
+    <!-- Topbar -->
+    <div th:replace="~{/fragments/nuevonav :: div}"></div>
+
+    <!-- Header de Contenido -->
+    <div class="content-header">
+      <h2>Punto de Venta</h2>
+      <div class="breadcrumb">
+        <a href="#">Inicio</a> / Ventas
+      </div>
+    </div>
+
+    <!-- Layout POS -->
+    <div class="pos-container">
+      
+      <!-- Panel Izquierdo -->
+      <div class="left-panel">
+        
+        <!-- Búsqueda -->
+<!-- Búsqueda -->
+<div class="search-card">
+  <label><i class="fa-solid fa-barcode"></i> Productos</label>
+  <div style="display: flex; gap: 8px;">
+    <!-- El ID barcode-input VA AQUÍ -->
+    <input type="text" 
+           id="barcode-input" 
+           class="form-control" 
+           placeholder="Ingrese el código de barras o el nombre del producto y presione Enter...">
+    
+    <!-- El botón lleva un ID DIFERENTE -->
+    <button type="button" id="btn-search" class="btn btn-primary">
+      <i class="fa-solid fa-magnifying-glass"></i> Buscar
+    </button>
+  </div>
+</div>
+
+        <!-- Botones y Total General -->
+        <div class="actions-bar">
+          <div class="total-title">Total Venta: $ <span class="summary-total-val">00</span></div>
+          <div>
+            <button id="btnRealizarVenta" class="btn btn-blue">
+              <i class="fa-solid fa-cart-shopping">
+              </i> Realizar Venta</button>
+            <button class="btn btn-red" id="btn-empty"><i class="fa-solid fa-trash"></i> Vaciar Listado</button>
+          </div>
+        </div>
+
+        <!-- Controles de la Tabla -->
+        <div class="table-controls">
+          <div>
+            Mostrar 
+            <select style="padding: 2px 5px; border-radius: 3px;">
+              <option>10</option>
+              <option>25</option>
+            </select>
+            registros
+          </div>
+          <div class="d-flex align-items-center mb-2">
+  <label class="me-2 fw-bold">Monto manual $:</label>
+  <input type="number" id="inputMontoManual" class="form-control form-control-sm me-2" placeholder="0.00" style="width: 150px;">
+  <button type="button" class="btn btn-primary" onclick="agregarMontoManual()">
+    + Agregar Monto
+  </button>
+          </div>
+        </div>
+
+        <!-- Tabla de Productos -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Código <i class="fa-solid fa-sort"></i></th>
+                <th>Producto <i class="fa-solid fa-sort"></i></th>
+                <th>Cantidad <i class="fa-solid fa-sort"></i></th>
+                <th>Precio <i class="fa-solid fa-sort"></i></th>
+                <th>Total <i class="fa-solid fa-sort"></i></th>
+                <th>Opciones <i class="fa-solid fa-sort"></i></th>
+              </tr>
+            </thead>
+            <tbody id="cart-table-body">
+              <!-- Carga dinámica vía JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="table-footer">
+          <div>Mostrando registros del 1 al <span id="items-count">0</span> de un total de <span id="items-total-count">0</span> registros</div>
+          <div class="pagination">
+            <button disabled>Anterior</button>
+            <button class="active">1</button>
+            <button disabled>Siguiente</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel Derecho (Pago) -->
+      <div class="right-panel">
+        
+        <div class="total-banner">
+          Total Venta: $ <span class="summary-total-val">00</span>
+        </div>
+
+          <div class="form-group">
+  <label for="payment-method">Método de Pago</label>
+  <select id="payment-method" class="form-control">
+    <option value="EFECTIVO">Efectivo</option>
+    <option value="TRANSFERENCIA">Transferencia</option>
+    <option value="TARJETA">Tarjeta</option>
+    <option value="RECARGA">Recarga</option>
+
+  </select>
+</div>
+
+<div class="form-group">
+  <label>Monto recibido / pagado</label>
+  <input type="number" id="received-amount" class="form-control" value="0.00" step="0.10">
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px;">
+  <input type="checkbox" id="exact-cash" checked>
+  <label for="exact-cash">Monto Exacto</label>
+</div>
+
+<!-- Resumen del Pago -->
+<div class="totals-summary">
+  <div class="summary-row bold">
+    <span>Monto Recibido:</span>
+    <span>$ <span id="summary-cash">0.00</span></span>
+  </div>
+  <div class="summary-row bold text-red">
+    <span>Vuelto:</span>
+    <span>$ <span id="summary-change">0.00</span></span>
+  </div>
+  <br>
+  <div class="summary-row bold">
+    <span>TOTAL A PAGAR</span>
+    <span>$ <span class="summary-total-val">0.00</span></span>
+  </div>
+</div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript interactivo -->
+    <script src="/js/sales.js"></script>
+    <script src="/js/sidebar.js"></script>
+
+
+</body>
+</html>

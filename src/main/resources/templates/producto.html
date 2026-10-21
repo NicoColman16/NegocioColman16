@@ -1,0 +1,212 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nuevo Producto - El Patito</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <head th:replace="~{/fragments/head :: head}"></head>
+  </head>
+  <body class="bg-light">
+    <!-- Sidebar -->
+    <div th:replace="~{/fragments/sidebar :: div}"></div>
+
+    <!-- Usamos container-fluid px-4 para aprovechar todo el ancho de la pantalla -->
+    <div class="container-fluid px-4 py-4">
+      <div th:replace="~{/fragments/nuevonav :: div}"></div>
+
+      <!-- Alerta de éxito -->
+      <div
+        th:if="${param.exito}"
+        class="alert alert-success alert-dismissible fade show shadow-sm mb-4"
+        role="alert"
+      >
+        <i class="bi bi-check-circle-fill"></i> ¡Producto registrado
+        correctamente!
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Tarjeta a pantalla completa -->
+      <div class="card shadow-sm border-0 w-100">
+        <div class="card-header bg-primary text-white py-3">
+          <h4 class="mb-0">
+            <i class="bi bi-box-seam"></i>
+            <span
+              th:text="${producto.id == null ? 'Registrar Nuevo Producto' : 'Editar Producto ID: ' + producto.id}"
+            ></span>
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <form
+            th:action="@{/productos/guardar}"
+            th:object="${producto}"
+            method="post"
+            class="row g-3"
+          >
+
+            <input type="hidden" th:field="*{id}">
+            <!-- Nombre del Producto (Ocupa la mitad superior) -->
+            <div class="col-md-6">
+              <label for="nombre" class="form-label fw-bold"
+                >Nombre del Producto:</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-lg"
+                id="nombre"
+                th:field="*{nombre}"
+                required
+                placeholder="Ej. Harina Leudante 1kg"
+                autofocus
+              />
+            </div>
+
+            <!-- Código de Barras (Al lado derecho o directamente accesible) -->
+            <div class="col-md-6">
+              <label for="codigoBarras" class="form-label fw-bold"
+                >Código de Barras:</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-lg"
+                id="codigoBarras"
+                th:field="*{codigoBarras}"
+                placeholder="Ej. 7791234567890"
+              />
+            </div>
+
+            <!-- Checklist dinámico de categorías (Aprovechando el ancho en 3 o 4 columnas) -->
+            <div class="col-12 mt-3">
+              <label class="form-label fw-bold"
+                >Categorías / Tipos de Producto:</label
+              >
+              <div class="card p-3 bg-white border">
+                <div class="row g-2">
+                  <div
+                    class="col-6 col-sm-4 col-md-3 col-lg-2"
+                    th:each="tipo : ${T(com.Enum.TipoProducto).values()}"
+                  >
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        th:field="*{tiposProducto}"
+                        th:value="${tipo}"
+                        th:id="${'tipo_' + tipo}"
+                      />
+                      <label
+                        class="form-check-label text-nowrap"
+                        th:for="${'tipo_' + tipo}"
+                        th:text="${tipo}"
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label for="precioCosto" class="form-label fw-bold"
+                >Precio de Costo ($):</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="precioCosto"
+                th:field="*{precioCosto}"
+                required
+                placeholder="0"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label for="precioVenta" class="form-label fw-bold"
+                >Precio de Venta ($):</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="precioVenta"
+                th:field="*{precioVenta}"
+                required
+                placeholder="0"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label for="stockActual" class="form-label fw-bold"
+                >Stock Actual:</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="stockActual"
+                th:field="*{stockActual}"
+                required
+                placeholder="0"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label for="stockMinimo" class="form-label fw-bold"
+                >Stock Mínimo:</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="stockMinimo"
+                th:field="*{stockMinimo}"
+                required
+                placeholder="0"
+              />
+            </div>
+
+            <div class="col-12 mt-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="falta"
+                  th:field="*{falta}"
+                />
+                <label class="form-check-label text-danger fw-bold" for="falta">
+                  Marcar como faltante en stock
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 mt-4 d-flex justify-content-between">
+              <a href="/caja/movimientos" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+              </a>
+              <button type="submit" class="btn btn-success px-5 btn-lg">
+                <i class="bi bi-save"></i>
+                <span
+                  th:text="${producto.id == null ? 'Guardar Producto' : 'Actualizar Cambios'}"
+                ></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/producto.js"></script>
+  </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!-- <html xmlns:th= "http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="~{/fragments/head :: head}"></head>
+    <body>
+        <nav th:replace="~{/fragments/navbar :: nav}"></nav>
+
+
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Total</th>
+
+                </tr>
+            </thead>
+            <tbody th:each= "venta : ${VentaTipo}">
+                <tr>
+                    <th scope="row" th:text = "${venta.tipo}"></th>
+                    <td scope="row" th:text = "${venta.monto}"></td>
+
+                </tr>
+                
+            </tbody>
+<tr>
+                    <th scope="row" th:text = "TOTAL"></th>
+                    <td scope="row" th:text = "${Venta}"></td>
+                </tr>
+
+        </table>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    </body>
+</html> -->
+<html xmlns:th= "http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de Transacciones</title>
+    <!-- Bootstrap o estilos CSS que uses -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <head th:replace="~{/fragments/head :: head}"></head>
+
+</head>
+<body class="bg-light">
+
+      <!-- Sidebar -->
+    <div th:replace="~{/fragments/sidebar :: div}"></div>
+
+
+  <!-- Contenido Principal -->
+  <div class="main-wrapper">
+    <!-- Topbar -->
+    <div th:replace="~{/fragments/nuevonav :: div}"></div>
+
+        <!-- Header de Contenido -->
+    <div class="content-header">
+      <h2>Reportes</h2>
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / Reportes
+      </div>
+    </div>
+
+    <div class="container-fluid p-4">
+        
+        <!-- SECCIÓN DE FILTROS (Inspirado en tu segunda foto) -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-secondary text-white py-2">
+                <strong>Filtros - Informe de Transacciones</strong>
+            </div>
+            <div class="card-body bg-white">
+                <form method="get" th:action="@{/venta/reportes}" class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label small">Desde (Fecha y Hora)</label>
+                        <input type="datetime-local" name="desde" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Hasta (Fecha y Hora)</label>
+                        <input type="datetime-local" name="hasta" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Medio de Pago</label>
+                    <select name="medioPago" class="form-select form-select-sm">
+            <option value="">Cualquier / Todos</option>
+            <option value="EFECTIVO" th:selected="${param.medioPago == 'EFECTIVO'}">Efectivo</option>
+            <option value="TARJETA" th:selected="${param.medioPago == 'TARJETA'}">Tarjeta</option>
+            <option value="TRANSFERENCIA" th:selected="${param.medioPago == 'TRANSFERENCIA'}">Transferencia</option>
+            <option value="RECARGA" th:selected="${param.medioPago == 'RECARGA'}">Recarga</option>
+        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="passwordAdmin" class="form-label">Contraseña de autorización</label>
+                        <input type="password" class="form-control form-control-sm" id="passwordAdmin" name="passwordAdmin" placeholder="Ingrese clave para buscar">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Monto Exacto</label>
+                        <input type="number" step="0.01" name="monto" class="form-control form-control-sm" placeholder="Ej: 1500">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary btn-sm w-100"><i class="fa fa-search"></i> Buscar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+<!-- PANEL DE TOTALES RÁPIDOS -->
+<div class="container mb-4">
+    <!-- Fila 1: Los 4 métodos de pago (4 columnas de 3 = 12 total) -->
+    <div class="row text-center g-3 mb-3">
+        <div class="col-6 col-md-3">
+            <div class="card p-3 border-primary shadow-sm h-100">
+                <span class="text-muted small">Total Efectivo</span>
+                <h5 class="text-primary mb-0" th:text="${'$' + #numbers.formatDecimal(totalEfectivo, 1, 'COMMA', 2, 'POINT')}">$0.00</h5>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-3 border-success shadow-sm h-100">
+                <span class="text-muted small">Total Tarjeta</span>
+                <h5 class="text-success mb-0" th:text="${'$' + #numbers.formatDecimal(totalTarjeta, 1, 'COMMA', 2, 'POINT')}">$0.00</h5>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-3 border-info shadow-sm h-100">
+                <span class="text-muted small">Total Transferencia</span>
+                <h5 class="text-info mb-0" th:text="${'$' + #numbers.formatDecimal(totalTransferencia, 1, 'COMMA', 2, 'POINT')}">$0.00</h5>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-3 border-warning shadow-sm h-100">
+                <span class="text-muted small">Total Recarga</span>
+                <h5 class="text-warning mb-0" th:text="${'$' + #numbers.formatDecimal(totalRecarga, 1, 'COMMA', 2, 'POINT')}">$0.00</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fila 2: Total General Centrado -->
+    <div class="row justify-content-center text-center">
+        <div class="col-md-4">
+            <div class="card p-3 border-dark shadow bg-dark text-white">
+                <span class="small text-uppercase tracking-wide">Total General</span>
+                <h4 class="text-white mb-0 fw-bold" th:text="${'$' + #numbers.formatDecimal(totalGeneral, 1, 'COMMA', 2, 'POINT')}">$0.00</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- TABLA DE RESULTADOS (Inspirado en tu primera foto) -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                <span class="small text-muted" th:text="${'Informe de Transacciones (' + cantidadRegistros + ' Registros)'}">Informe de Transacciones</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-sm mb-0 align-middle">
+                        <thead class="table-secondary small">
+                            <tr>
+                                <th>ID Venta</th>
+                                <th>Fecha y Hora</th>
+                                <th>Medio de Pago</th>
+                                <th>Monto Total</th>
+                                <th class="text-center">Auditoría de Video</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${ventas.empty}">
+                                <td colspan="5" class="text-center py-4 text-muted">No se encontraron transacciones con los filtros aplicados.</td>
+                            </tr>
+                            <tr th:each="v : ${ventas}">
+                                <td th:text="${v.id}">1</td>
+                                <td th:text="${#temporals.format(v.fechaHora, 'dd/MM/yyyy HH:mm:ss')}">14/10/2026 13:30:02</td>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${v.medioPago}">EFECTIVO</span>
+                                </td>
+                                <td class="fw-bold" th:text="${'$' + v.montoTotal}">$0.00</td>
+                                <td class="text-center">
+                                    <a th:if="${v.rutaVideoAuditoria != null}" th:href="${v.rutaVideoAuditoria}" target="_blank" class="btn btn-sm btn-outline-danger" title="Ver clip de cámara">
+                                        <i class="fa-solid fa-video"></i> Ver Video
+                                    </a>
+                                    <span th:if="${v.rutaVideoAuditoria == null}" class="text-muted small">No disponible</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/js/sidebar.js"></script>
+
+</body>
+</html>
