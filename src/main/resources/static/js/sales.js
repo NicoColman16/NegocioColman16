@@ -23,6 +23,12 @@ function editItemFromCart(codigoBarras) {
 // 2. RENDERIZADO DEL CARRITO Y TOTALES
 // ==========================================
 function renderCart() {
+  // Guardamos temporalmente qué elemento (input/botón) tiene el foco actualmente para no perderlo
+  const activeElement = document.activeElement;
+  const activeId = activeElement ? activeElement.id : null;
+  const activeDatasetIndex = activeElement ? activeElement.dataset.index : null;
+  const cursorPosition = activeElement && typeof activeElement.selectionStart === 'number' ? activeElement.selectionStart : null;
+
   const tbody = document.getElementById("cart-table-body");
   if (tbody) tbody.innerHTML = "";
 
@@ -44,6 +50,8 @@ function renderCart() {
             <input type="number" 
                    value="${item.qty}" 
                    min="1" 
+                   data-index="${index}"
+                   id="qty-input-${index}"
                    onchange="changeQtyInput(${index}, this.value)" 
                    style="width: 50px; text-align: center;" class="form-control">
             <button type="button" class="btn-qty" onclick="updateQty(${index}, 1)" style="padding: 2px 8px; cursor: pointer;">+</button>
@@ -71,41 +79,30 @@ function renderCart() {
   });
 
   // Método de pago y recargos
-
   const methodSelect = document.getElementById("payment-method");
   const method = methodSelect ? methodSelect.value : "efectivo";
 
   const checkRecarga = document.getElementById("checkRecarga");
+  const esRecarga = checkRecarga ? checkRecarga.checked : false; 
 
-  const esRecarga = checkRecarga ? checkRecarga.checked : false; // Para porcentajes
+  let surchargeRatio = 0; 
+  let surchargeAmount = 0; 
 
-  // 1. Inicializamos las variables de recargo
-  let surchargeRatio = 0; // Para porcentajes (TRANSFERENCIA, TARJETA)
-  let surchargeAmount = 0; // Para montos fijos en pesos ($)
-
-  // 2. Evaluamos según el método de pago o regla seleccionada
   if (method === "TRANSFERENCIA") {
-    surchargeRatio = 0.05; // 5%
+    surchargeRatio = 0.05; 
   } else if (method === "TARJETA") {
-    surchargeRatio = 0.08; // 8%
+    surchargeRatio = 0.08; 
   } else if (method === "RECARGA") {
-    // Ajusta esto según el nombre que uses para tu tercera regla
-    // Si la baseTotal es menor a 2000, cobra $20 cada $100
     if (baseTotal < 2499) {
       surchargeAmount = (baseTotal / 100) * 20;
-    }
-    // Si supera los 2500, se agrega un recargo fijo de 500 sin importar el monto
-    else if (baseTotal >= 2500) {
+    } else if (baseTotal >= 2500) {
       surchargeAmount = 500;
     }
   }
 
-  // 3. Aplicamos tanto el porcentaje como el monto fijo al total base
   let rawTotal = baseTotal * (1 + surchargeRatio) + surchargeAmount;
-
   currentFinalTotal = roundToNextTen(rawTotal);
 
-  // 4. Actualizar UI
   document.querySelectorAll(".summary-total-val").forEach((el) => {
     el.innerText = currentFinalTotal;
   });
@@ -123,10 +120,22 @@ function renderCart() {
   setElemText("items-total-count", cart.length);
 
   updatePaymentSummary();
+
+  // Restaurar el foco dinámicamente donde estaba el usuario para que no salte al escaner
+  if (activeId && document.getElementById(activeId)) {
+    const elToFocus = document.getElementById(activeId);
+    elToFocus.focus();
+    if (cursorPosition !== null && typeof elToFocus.setSelectionRange === 'function') {
+      try {
+        elToFocus.setSelectionRange(cursorPosition, cursorPosition);
+      } catch (e) {
+        // Ignorar si el tipo de input no soporta selectionRange
+      }
+    }
+  }
 }
 
 //Cambio de Estado de producto
-
 async function toggleFaltaEstado(id, eventTarget) {
     try {
         const response = await fetch(`/api/productos/toggle-falta/${id}`, {
@@ -139,12 +148,7 @@ async function toggleFaltaEstado(id, eventTarget) {
         if (response.ok) {
             const data = await response.json();
             console.log("Estado actualizado:", data.nuevoEstado);
-
             alert("Producto cambiado");
-            
-            // O si preferís actualizar solo la tablita/carrito local sin recargar:
-            // actualizarVistaLocal();
-
         } else {
             console.error("Error al actualizar el estado");
             alert("Error al cambiar");
@@ -217,7 +221,6 @@ async function executeProductSearch() {
   const query = barcodeInput.value.trim();
   if (!query) return;
 
-  // Evitar ejecuciones duplicadas simultáneas
   if (isSearching) return;
   isSearching = true;
 
@@ -248,6 +251,10 @@ async function executeProductSearch() {
 
       barcodeInput.value = "";
       renderCart();
+      
+      // Tras escanear y agregar un producto por código de barras, 
+      // nos aseguramos de mantener el foco en el escáner para el siguiente artículo.
+      barcodeInput.focus();
     } else if (response.status === 404) {
       alert("Producto no encontrado.");
       barcodeInput.select();
@@ -292,8 +299,8 @@ function agregarMontoManual() {
   input.value = "";
   renderCart();
 
-  const barcodeInput = document.getElementById("barcode-input");
-  if (barcodeInput) barcodeInput.focus();
+  // NOTA: Se eliminó el `barcodeInput.focus()` de aquí para que 
+  // el usuario pueda seguir escribiendo montos manuales seguidos sin perder el foco.
 }
 
 // ==========================================
@@ -317,7 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ? paymentMethodSelect.value
       : "EFECTIVO";
 
-    // Solo enviamos el total y el medio de pago
     const ventaData = {
       montoTotal: currentFinalTotal,
       medioPago: medioPago,
@@ -341,15 +347,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         cart = [];
-        renderCart(); // Limpia la tabla y el total en pantalla
+        renderCart(); 
 
-        const inputCodigo = document.getElementById("codigoBarra");
-        if (inputCodigo) inputCodigo.focus();
+        // Al realizar la venta con éxito, devolvemos el foco al escáner
+        const barcodeInput = document.getElementById("barcode-input");
+        if (barcodeInput) barcodeInput.focus();
 
         alert("¡Venta registrada con éxito!");
       } else {
         alert("Error al registrar la venta.");
-        console.log();
       }
     } catch (error) {
       console.error("Error de conexión:", error);
@@ -363,6 +369,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("btn-search");
 
   if (barcodeInput) {
+    // Focus inicial al cargar la página
+    barcodeInput.focus();
+
     barcodeInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -397,10 +406,11 @@ document.addEventListener("DOMContentLoaded", () => {
     emptyBtn.addEventListener("click", () => {
       cart = [];
       renderCart();
+      const barcodeInput = document.getElementById("barcode-input");
+      if (barcodeInput) barcodeInput.focus();
     });
   }
 
-  // Listener para el Checkbox de Recarga / Comisión
   const checkRecargaElem = document.getElementById("checkRecarga");
   if (checkRecargaElem) {
     checkRecargaElem.addEventListener("change", renderCart);
@@ -418,7 +428,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const exactElem = document.getElementById("exact-cash");
   if (exactElem) exactElem.addEventListener("change", updatePaymentSummary);
 
-  // DataTables si aplica
   if (window.jQuery && $.fn.DataTable && $("#tablaVentas").length) {
     $("#tablaVentas").DataTable({
       searching: false,
