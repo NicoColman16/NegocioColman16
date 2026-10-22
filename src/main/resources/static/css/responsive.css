@@ -1,0 +1,102 @@
+/* Estilo base para pantallas grandes (Escritorio) */
+.topbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.topbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    align-items: center;
+}
+
+/* Ocultamos el botón de hamburguesa en pantallas grandes */
+#btn-menu-toggle {
+    display: none;
+}
+
+/* Comportamiento para Celulares (Pantallas menores a 768px) */
+@media (max-width: 768px) {
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Mostramos el botón de hamburguesa en celulares */
+    #btn-menu-toggle {
+        display: block;
+        padding: 5px;
+    }
+
+    /* Por defecto, el menú se oculta en celulares */
+    .topbar-nav {
+        display: none; 
+        flex-direction: column;
+        width: 100%;
+        padding-top: 10px;
+    }
+
+    /* Cuando se active con JS, se muestra en columna */
+    .topbar-nav.activo {
+        display: flex;
+    }
+
+    .topbar-nav li {
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    /* Reseteamos el margen automático de la PC en celular */
+    .topbar-nav li:last-child {
+        margin-left: 0 !important; 
+    }
+}
+
+/* --- ESTILOS RESPONSIVOS PARA INVENTARIO --- */
+@media (max-width: 768px) {
+    /* 1. Ajustamos los márgenes globales del contenido principal */
+    .main-wrapper {
+        margin-left: 0 !important;
+        padding: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* 2. Adaptamos el contenedor del buscador para que apile los elementos */
+    .search-card > div {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .search-card input, 
+    .search-card button {
+        width: 100% !important;
+    }
+
+    /* 3. Permitimos scroll horizontal nativo y suave SOLO en la tabla si es muy ancha */
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 4. Apilamos el pie de la tabla (paginación y contador de registros) */
+    .table-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .table-footer .pagination {
+        width: 100%;
+        justify-content: center;
+    }
+}

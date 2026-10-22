@@ -58,6 +58,9 @@
         <input type="number" step="0.01" class="form-control" id="monto" name="monto" required placeholder="0.00">
     </div>
 
+    <!-- Input oculto que almacenará el monto final con el recargo ya calculado -->
+<input type="hidden" id="input-dinero-final" name="montoFinal" value="0">
+
     <div class="col-md-4">
         <label for="origenMedio" class="form-label text-danger fw-bold"><i class="bi bi-dash-circle"></i> Resta (Entregado):</label>
         <select class="form-select border-danger" id="origenMedio" name="origenMedio" required>
@@ -81,13 +84,23 @@
         <input type="text" class="form-control" id="motivo" name="motivo" placeholder="Ej. Cambio de efectivo por transferencia">
     </div>
 
-    <!-- NUEVO: Etiqueta para mostrar el cálculo en tiempo real -->
-    <div class="col-12">
-        <div class="alert alert-info py-2 mb-0">
-            <i class="bi bi-calculator"></i> Monto final con recargo aplicado: 
-            <strong id="textoMontoFinal" class="fs-5 text-dark">$ 0.00</strong>
-        </div>
-    </div>
+<!-- Recuadro para mostrar el cálculo en tiempo real -->
+<div class="card p-3 bg-light mt-3" id="resumen-comision-box">
+  <h6 class="fw-bold text-primary"><i class="fa-solid fa-calculator"></i> Desglose de Operación</h6>
+  <div class="d-flex justify-content-between">
+    <span>Porcentaje aplicado:</span>
+    <strong id="lbl-porcentaje">0%</strong>
+  </div>
+  <div class="d-flex justify-content-between">
+    <span>Comisión / Recargo:</span>
+    <strong id="lbl-comision" class="text-danger">$ 0.00</strong>
+  </div>
+  <hr class="my-2">
+  <div class="d-flex justify-content-between fs-5">
+    <span>Total Final:</span>
+    <strong id="lbl-total-final" class="text-success">$ 0.00</strong>
+  </div>
+</div>
 
     <div class="col-12 mt-3">
         <button type="submit" class="btn btn-success">
@@ -139,5 +152,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/sidebar.js"></script>
     <script src="/js/caja.js"></script>
+    <script src="/js/responsive.js"></script>
+
 </body>
 </html>

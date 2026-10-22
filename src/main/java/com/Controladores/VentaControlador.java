@@ -184,49 +184,56 @@ public class VentaControlador {
 
         // 3. Ajuste con movimientos de caja (filtrados por fecha si se ingresaron
         // rangos)
-         if ("1234".equals(passwordAdmin)) {
-        List<MovimientoCaja> listaMovimientos = movimientoRepo.findAll();
-        for (MovimientoCaja m : listaMovimientos) {
-            if (m.getMonto() != null) {
+if ("1234".equals(passwordAdmin)) {
+    List<MovimientoCaja> listaMovimientos = movimientoRepo.findAll();
+    for (MovimientoCaja m : listaMovimientos) {
+        
+        // Verificamos que tenga al menos un monto válido
+        if (m.getMonto() != null || m.getMontoFinal() != null || m.getMonto() != null) {
 
-                // Si hay filtro de fecha, verificamos que el movimiento esté dentro del rango
-                // buscado
-                boolean dentroDeFecha = true;
-                if (m.getFechaHora() != null) {
-                    if (fechaDesde != null && m.getFechaHora().isBefore(fechaDesde)) {
-                        dentroDeFecha = false;
-                    }
-                    if (fechaHasta != null && m.getFechaHora().isAfter(fechaHasta)) {
-                        dentroDeFecha = false;
-                    }
+            boolean dentroDeFecha = true;
+            if (m.getFechaHora() != null) {
+                if (fechaDesde != null && m.getFechaHora().isBefore(fechaDesde)) {
+                    dentroDeFecha = false;
                 }
+                if (fechaHasta != null && m.getFechaHora().isAfter(fechaHasta)) {
+                    dentroDeFecha = false;
+                }
+            }
 
-                if (dentroDeFecha) {
-                    BigDecimal montoMov = m.getMonto();
+            if (dentroDeFecha) {
+                // Definimos qué monto sale (base) y qué monto entra (final con recargo)
+                BigDecimal montoSalida = m.getMonto() != null ? m.getMonto() : m.getMonto();
+                BigDecimal montoIngreso = m.getMontoFinal() != null ? m.getMontoFinal() : m.getMonto();
 
-                    // Restar de Origen
-                    if (m.getOrigenMedio() == MedioPago.EFECTIVO)
-                        totalEfectivo = totalEfectivo.subtract(montoMov);
-                    if (m.getOrigenMedio() == MedioPago.TARJETA)
-                        totalTarjeta = totalTarjeta.subtract(montoMov);
-                    if (m.getOrigenMedio() == MedioPago.TRANSFERENCIA)
-                        totalTransferencia = totalTransferencia.subtract(montoMov);
-                    if (m.getOrigenMedio() == MedioPago.RECARGA)
-                        totalRecarga = totalRecarga.subtract(montoMov);
+                // 1. Restar el MONTO BASE del Origen
+                if (m.getOrigenMedio() == MedioPago.EFECTIVO)
+                    totalEfectivo = totalEfectivo.subtract(montoSalida);
+                if (m.getOrigenMedio() == MedioPago.TARJETA)
+                    totalTarjeta = totalTarjeta.subtract(montoSalida);
+                if (m.getOrigenMedio() == MedioPago.TRANSFERENCIA)
+                    totalTransferencia = totalTransferencia.subtract(montoSalida);
+                if (m.getOrigenMedio() == MedioPago.RECARGA)
+                    totalRecarga = totalRecarga.subtract(montoSalida);
 
-                    // Sumar a Destino
-                    if (m.getDestinoMedio() == MedioPago.EFECTIVO)
-                        totalEfectivo = totalEfectivo.add(montoMov);
-                    if (m.getDestinoMedio() == MedioPago.TARJETA)
-                        totalTarjeta = totalTarjeta.add(montoMov);
-                    if (m.getDestinoMedio() == MedioPago.TRANSFERENCIA)
-                        totalTransferencia = totalTransferencia.add(montoMov);
-                    if (m.getDestinoMedio() == MedioPago.RECARGA)
-                        totalRecarga = totalRecarga.add(montoMov);
+                // 2. Sumar el MONTO FINAL (con recargo) al Destino
+                if (m.getDestinoMedio() == MedioPago.EFECTIVO)
+                    totalEfectivo = totalEfectivo.add(montoIngreso);
+                if (m.getDestinoMedio() == MedioPago.TARJETA)
+                    totalTarjeta = totalTarjeta.add(montoIngreso);
+                if (m.getDestinoMedio() == MedioPago.TRANSFERENCIA)
+                    totalTransferencia = totalTransferencia.add(montoIngreso);
+                if (m.getDestinoMedio() == MedioPago.RECARGA)
+                    totalRecarga = totalRecarga.add(montoIngreso);
+
+                BigDecimal comisionExtra = montoIngreso.subtract(montoSalida);
+                if (comisionExtra.compareTo(BigDecimal.ZERO)> 0){
+                    totalGeneral = totalGeneral.add(comisionExtra);
                 }
             }
         }
-        }
+    }
+}
         
         // 4. Pasar todos los totales calculados a la vista
         model.addAttribute("totalEfectivo", totalEfectivo);

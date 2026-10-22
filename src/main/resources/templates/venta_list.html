@@ -171,7 +171,11 @@
                                 <td th:text="${v.id}">1</td>
                                 <td th:text="${#temporals.format(v.fechaHora, 'dd/MM/yyyy HH:mm:ss')}">14/10/2026 13:30:02</td>
                                 <td>
-                                    <span class="badge bg-secondary" th:text="${v.medioPago}">EFECTIVO</span>
+                                    <span class="badge" 
+                                        th:classappend="${v.medioPago.toString() == 'EFECTIVO'} ? 'bg-success' : (${v.medioPago.toString() == 'TARJETA'} ? 'bg-primary' : 'bg-warning text-dark')"
+                                        th:text="${v.medioPago}">
+                                        EFECTIVO
+                                    </span>
                                 </td>
                                 <td class="fw-bold" th:text="${'$' + v.montoTotal}">$0.00</td>
                                 <td class="text-center">
@@ -189,6 +193,7 @@
 
     </div>
 
+    <script src="/js/responsive.js"></script>
     <script src="/js/sidebar.js"></script>
 
 </body>

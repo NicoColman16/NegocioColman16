@@ -1,11 +1,20 @@
-    <div class="topbar">
-      <i class="fa-solid fa-bars" style="cursor:pointer; color:#6c757d;"></i>
-      <ul class="topbar-nav">
-        <li><a href="/">Tablero</a></li>
-        <li><a href="/venta/inventario">Inventario</a></li>
-        <li><a href="/productos/nuevo">Carga Masiva de Productos</a></li>
-        <li><a href="#">Categorías</a></li>
-        <li><a href="/venta/nuevo">Ventas</a></li>
-        <li><a href="/venta/reportes">Reportes</a></li>
-      </ul>
-    </div>
+<div class="topbar">
+  <!-- Agregamos un id para detectarlo con JavaScript -->
+  <i class="fa-solid fa-bars" id="btn-menu-toggle" style="cursor:pointer; color:#6c757d; font-size: 1.2rem;"></i>
+  
+  <!-- Agregamos un id al ul -->
+  <ul class="topbar-nav" id="topbar-menu">
+    <li><a href="/">Tablero</a></li>
+    <li><a href="/venta/inventario">Inventario</a></li>
+    <li><a href="/productos/nuevo">Carga de Productos</a></li>
+    <li><a href="#">Categorías</a></li>
+    <li><a href="/venta/nuevo">Ventas</a></li>
+    <li><a href="/venta/reportes">Reportes</a></li>
+    
+    <li style="margin-left: auto;">
+      <a href="/logout" class="text-danger fw-semibold">
+        <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
+      </a>
+    </li>
+  </ul>
+</div>

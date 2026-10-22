@@ -1,6 +1,82 @@
-body{
-    background-color: rgb(177, 177, 154);
-    
+/* Asegura que la página completa permita scroll vertical nativo */
+html, body {
+    height: 100%;
+    overflow-y: auto !important; /* Fuerza la habilitación del scroll vertical */
+}
+
+/* Si tu sidebar es fijo, asegúrate de que el contenido principal tenga margen y pueda desplazarse libremente */
+.container-fluid {
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* 1. Hacemos que la barra superior tenga prioridad de capas */
+.topbar {
+    position: relative; /* Necesario para que el z-index surta efecto */
+    z-index: 1050;      /* Un número alto para estar por encima de las tarjetas */
+}
+
+/* 2. Cuando el menú se despliegue en celulares, aseguramos que flote con fondo sólido y sombra */
+@media (max-width: 768px) {
+    .topbar-nav.activo {
+        display: flex !important;
+        position: absolute;       /* Hace que flote sobre el contenido y no lo empuje de forma extraña */
+        top: 100%;                /* Se posiciona justo debajo de la barra superior */
+        left: 0;
+        width: 100%;
+        background-color: #ffffff; /* Fondo blanco obligatorio para que no sea transparente */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra elegante para destacar */
+        padding: 10px 15px;
+        z-index: 1060;            /* Capa aún más alta para el menú desplegado */
+    }
+}
+
+/* --- ESTILOS BASE PARA ESCRITORIO --- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; /* O el ancho que ya tenga tu sidebar */
+    height: 100vh;
+    background-color: #343a40; /* Color oscuro típico de sidebar */
+    color: #fff;
+    transition: all 0.3s ease;
+    z-index: 1070; /* Por encima de todo */
+}
+
+/* Si usas sidebar fijo, recuerda desplazar el contenido principal a la derecha en PC */
+body {
+    margin-left: 250px; /* Ajusta según el ancho de tu sidebar */
+}
+
+
+/* --- COMPORTAMIENTO PARA CELULARES (Menor a 768px) --- */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%); /* Lo saca completamente de la pantalla hacia la izquierda */
+        width: 250px;
+    }
+
+    /* Cuando se active mediante JavaScript, entra en pantalla */
+    .sidebar.activo {
+        transform: translateX(0);
+    }
+
+    /* En celulares, el contenido principal ocupa el 100% y no deja margen izquierdo */
+    body {
+        margin-left: 0 !important;
+    }
+}
+/* Por defecto en PC ocultamos la X del sidebar */
+#btn-sidebar-close {
+    display: none;
+}
+
+/* En celulares, mostramos la X dentro del header del sidebar */
+@media (max-width: 768px) {
+    #btn-sidebar-close {
+        display: block !important;
+    }
 }
 
 .propio{

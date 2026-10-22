@@ -23,6 +23,8 @@ public class MovimientoCaja {
     private String responsable; // Nombre de la persona que lo hace
     
     private BigDecimal monto;
+
+    private BigDecimal montoFinal;
     
     @Enumerated(EnumType.STRING)
     private MedioPago origenMedio; // Usando el Enum

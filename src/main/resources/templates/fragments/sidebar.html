@@ -1,6 +1,13 @@
+<div class="topbar">
+  <!-- Botón de hamburguesa para controlar el Sidebar en celulares -->
+  <i class="fa-solid fa-bars" id="btn-sidebar-toggle" style="cursor:pointer; font-size: 1.5rem; color:#6c757d;"></i>
+  <!-- Resto de tu barra superior... -->
+</div>
 <div class="sidebar" th:fragment="sidebar">
-  <div class="sidebar-header">
-    <i class="fa-solid fa-store"></i> El Patito
+  <div class="sidebar-header d-flex justify-content-between align-items-center px-3 py-3">
+    <span><i class="fa-solid fa-store me-2"></i> El Patito</span>
+    <!-- Botón de cierre (visible principalmente en celulares) -->
+    <i class="fa-solid fa-xmark" id="btn-sidebar-close" style="cursor: pointer; font-size: 1.2rem;"></i>
   </div>
   <ul class="sidebar-menu">
     <li>
