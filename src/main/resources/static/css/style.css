@@ -1,7 +1,8 @@
-/* Asegura que la página completa permita scroll vertical nativo */
+/* Permite que la página crezca de forma natural */
 html, body {
-    height: 100%;
-    overflow-y: auto !important; /* Fuerza la habilitación del scroll vertical */
+    height: auto; /* Cambiado de 100% a auto */
+    min-height: 100%;
+    overflow-y: auto !important;
 }
 
 /* Si tu sidebar es fijo, asegúrate de que el contenido principal tenga margen y pueda desplazarse libremente */
