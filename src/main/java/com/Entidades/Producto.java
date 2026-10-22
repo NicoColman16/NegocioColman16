@@ -40,7 +40,7 @@ public class Producto {
     
     private Date ultMod;
 
-    private Boolean falta;
+    private boolean falta;
     
     // NUEVO: Colección para soportar múltiples categorías del Enum
     @ElementCollection(targetClass = TipoProducto.class)

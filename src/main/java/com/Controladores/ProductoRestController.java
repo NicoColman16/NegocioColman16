@@ -4,13 +4,16 @@ import com.Entidades.Producto;
 import com.Repositorio.ProductoRepositorio;
 import com.Services.ProductoServicio;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +26,28 @@ public class ProductoRestController {
     private ProductoRepositorio productoRepository;
     private ProductoServicio productoServicio;
 
-    @GetMapping("/listar")
-    public ResponseEntity<Page<Producto>> listarProductos(
-            @RequestParam(defaultValue = "") String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int size) {
+ @GetMapping("/listar")
+public ResponseEntity<Page<Producto>> listarProductos(
+        @RequestParam(defaultValue = "") String query,
+        @RequestParam(required = false) Boolean soloFaltas,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "15") int size) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("nombre").ascending());
-        Page<Producto> productosPage = productoRepository.buscarProductosPaginados(query, pageable);
+    Pageable pageable = PageRequest.of(page, size, Sort.by("nombre").ascending());
+    Page<Producto> productosPage;
 
-        return ResponseEntity.ok(productosPage);
+    // Si 'soloFaltas' es true, filtramos solo los que tienen falta en true
+    if (Boolean.TRUE.equals(soloFaltas)) {
+        // Nota: Asegúrate de tener un método en tu repositorio que soporte esto, 
+        // por ejemplo, buscando por query y filtrando faltas a la vez.
+        productosPage = productoRepository.buscarFaltasConQuery(query, true, pageable);
+    } else {
+        // Tu método original que ya te funciona para la búsqueda normal
+        productosPage = productoRepository.buscarProductosPaginados(query, pageable);
     }
+
+    return ResponseEntity.ok(productosPage);
+}
 
 
     @GetMapping ("/inventario")
@@ -83,4 +97,26 @@ public class ProductoRestController {
         // Redirige de vuelta a la pantalla de modificación limpia
         return "redirect:/producto/modificar";
     }
+
+    @PostMapping("/toggle-falta/{id}")
+    public ResponseEntity<?> toggleFalta(@PathVariable Long id) {
+    Optional<Producto> productoOpt = productoRepository.findById(id);
+    
+    if (productoOpt.isPresent()) {
+        Producto producto = productoOpt.get();
+        
+        // Invierte el valor actual del booleano
+        boolean nuevoEstado = !producto.isFalta();
+        producto.setFalta(nuevoEstado);
+        
+        productoRepository.save(producto);
+        
+        // Retorna un código 200 OK con el nuevo estado si deseas usarlo en el frontend
+        return ResponseEntity.ok().body(Collections.singletonMap("nuevoEstado", nuevoEstado));
+    }
+    
+    // Si no encuentra el producto, retorna un 404 Not Found
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+}
+
 }

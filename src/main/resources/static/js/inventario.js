@@ -17,9 +17,12 @@ async function loadProducts(page = 0) {
   const pageSizeSelect = document.getElementById("select-page-size");
   const size = pageSizeSelect ? pageSizeSelect.value : 15;
 
+  const chkSoloFaltas = document.getElementById("chk-solo-faltas");
+  const soloFaltas = chkSoloFaltas ? chkSoloFaltas.checked : false;
+
   try {
     const response = await fetch(
-      `/api/productos/listar?query=${encodeURIComponent(query)}&page=${page}&size=${size}`,
+      `/api/productos/listar?query=${encodeURIComponent(query)}&soloFaltas=${soloFaltas}&page=${page}&size=${size}`,
     );
 
     if (response.ok) {
@@ -46,28 +49,63 @@ function renderProductsTable(productos, totalElements) {
   tbody.innerHTML = "";
 
   if (!productos || productos.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No se encontraron productos.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No se encontraron productos.</td></tr>`;tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No se encontraron productos.</td></tr>`;
     return;
   }
 
-productos.forEach((producto) => {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
+  productos.forEach((producto) => {
+    const tr = document.createElement("tr");
+
+    // Indicador visual según el estado de falta
+    const estadoBadge = producto.falta
+      ? `<span class="badge bg-danger">Falta Activa</span>`
+      : `<span class="badge bg-success">Normal</span>`;
+
+    // Clases dinámicas para el botón según el estado
+    const btnClass = producto.falta
+      ? "btn btn-sm btn-danger"
+      : "btn btn-sm btn-success";
+
+    const btnText = producto.falta ? "Quitar Falta" : "Marcar Falta";
+
+    tr.innerHTML = `
     <td>${producto.codigoBarras || "N/A"}</td>
     <td>${producto.nombre}</td>
-    <td>${producto.stockActual ?? 0} Und(s)</td>
-    <td>$ ${parseFloat(producto.precioVenta || 0).toFixed(2)}</td>
-    <td>${producto.tiposProducto ? producto.tiposProducto.join(', ') : "General"}</td>
+    <td>${producto.precioCosto ?? 0} $ </td>
+    <td>$ ${parseFloat(producto.precioVenta || 0).toFixed(2)} $</td>
+    <td>${producto.tiposProducto ? producto.tiposProducto.join(", ") : "General"}</td>
     <td>
       <div class="action-icons">
         <a href="/productos/editar/${producto.id}#precioVenta" class="btn btn-sm btn-warning">
-          <i class="fa-solid fa-pen-to-square"></i> Modificar Precio
+          <i class="fa-solid fa-pen-to-square"></i> Modificar
         </a>
       </div>
     </td>
+    <td class="text-center" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+      <button type="button" class="${btnClass}" onclick="toggleFaltaEstado(${producto.id})" title="Cambiar Estado">
+        <i class="fa-solid fa-rotate"></i> ${btnText}
+      </button>
+    </td>
   `;
-  tbody.appendChild(tr);
-});
+    tbody.appendChild(tr);
+  });
+}
+
+// Función asíncrona para cambiar el estado de falta sin recargar la página
+async function toggleFaltaEstado(id) {
+  try {
+    const response = await fetch(`/api/productos/toggle-falta/${id}`, {
+      method: "POST",
+    });
+    if (response.ok) {
+      // Recarga la tabla manteniendo la página y filtros actuales
+      loadProducts(currentPage);
+    } else {
+      console.error("Error al cambiar el estado del producto");
+    }
+  } catch (error) {
+    console.error("Error de red:", error);
+  }
 }
 
 // 3. Actualizar los botones y textos de la paginación
@@ -119,6 +157,12 @@ function addToCartDirect(id, code, name, price) {
 
 // 5. Inicializador único al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
+  const chkSoloFaltas = document.getElementById("chk-solo-faltas");
+  if (chkSoloFaltas) {
+    chkSoloFaltas.addEventListener("change", () => {
+      loadProducts(0); // Vuelve a la página 0 al alternar el filtro
+    });
+  }
   const barcodeInput = document.getElementById("barcode-input");
   const searchBtn = document.getElementById("btn-search");
   const pageSizeSelect = document.getElementById("select-page-size");
@@ -126,8 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnNext = document.getElementById("btn-next-page");
 
   // Evento Enter en el buscador (Escáner o Teclado)
-  if (barcodeInput) {
-    barcodeInput.addEventListener("keydown", (e) => {
+  if (barcodeInput && barcodeInput) {
+    searchBtn.addEventListener("click", () => loadProducts(0));
+    barcodeInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         loadProducts(0);

@@ -1,103 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head xmlns:th= "http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>El Patito - Inventario</title>
-  <!-- Iconos FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <head th:replace="~{/fragments/head :: head}"></head>
-  
-</head>
-<body>
+  <head
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  >
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>El Patito - Inventario</title>
+    <!-- Iconos FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <head th:replace="~{/fragments/head :: head}"></head>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div th:replace="~{/fragments/sidebar :: div}"></div>
 
-  <!-- Sidebar --> 
-  <div th:replace="~{/fragments/sidebar :: div}"></div>
+    <!-- Contenido Principal -->
+    <div class="main-wrapper">
+      <!-- Topbar -->
+      <div th:replace="~{/fragments/nuevonav :: div}"></div>
 
-  <!-- Contenido Principal -->
-  <div class="main-wrapper">
-    <!-- Topbar -->
-    <div th:replace="~{/fragments/nuevonav :: div}"></div>
+      <!-- Header de Contenido -->
+      <div class="content-header">
+        <h2>Inventario</h2>
+        <div class="breadcrumb"><a href="/">Inicio</a> / Inventario</div>
+      </div>
 
-    <!-- Header de Contenido -->
-    <div class="content-header">
-      <h2>Inventario</h2>
-      <div class="breadcrumb">
-        <a href="/">Inicio</a> / Inventario
+      <!-- Layout POS -->
+      <div class="pos-container">
+        <!-- Panel Izquierdo -->
+        <div class="left-panel">
+          <!-- Búsqueda -->
+          <div class="search-card">
+            <label><i class="fa-solid fa-barcode"></i> Productos</label>
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <input
+                type="text"
+                id="barcode-input"
+                class="form-control"
+                placeholder="Ingrese código, nombre o categoría y presione Enter..."
+                style="flex: 1"
+              />
+
+              <button type="button" id="btn-search" class="btn btn-primary">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between"
+          >
+            <span class="text-muted small">Filtrado rápido de inventario:</span>
+            <div class="form-check form-switch m-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="chk-solo-faltas"
+                checked
+                style="cursor: pointer; width: 2.5em; height: 1.25em"
+              />
+              <label
+                class="form-check-label fw-bold text-danger user-select-none ms-2"
+                for="chk-solo-faltas"
+                style="cursor: pointer; font-size: 0.9rem"
+              >
+                Mostrar solo productos en falta
+              </label>
+            </div>
+          </div>
+
+          <!-- Controles de la Tabla -->
+          <div class="table-controls">
+            <div>
+              Mostrar
+              <select
+                id="select-page-size"
+                style="padding: 2px 5px; border-radius: 3px"
+              >
+                <option value="10">10</option>
+                <option value="15" selected>15</option>
+                <option value="25">25</option>
+              </select>
+              registros
+            </div>
+          </div>
+
+          <!-- Tabla de Productos -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código <i class="fa-solid fa-sort"></i></th>
+                  <th>Producto <i class="fa-solid fa-sort"></i></th>
+                  <th>Costo <i class="fa-solid fa-sort"></i></th>
+                  <th>Precio <i class="fa-solid fa-sort"></i></th>
+                  <th>Categoría <i class="fa-solid fa-sort"></i></th>
+                  <th>Modificar <i class="fa-solid fa-sort"></i></th>
+                  <th>Falta <i class="fa-solid fa-sort"></i></th>
+                </tr>
+              </thead>
+              <tbody id="cart-table-body">
+                <!-- Carga dinámica vía JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginación -->
+          <div class="table-footer">
+            <div>
+              Mostrando registros del <span id="items-count">0</span> de un
+              total de <span id="items-total-count">0</span> registros
+            </div>
+            <div class="pagination">
+              <button type="button" id="btn-prev-page" disabled>
+                Anterior
+              </button>
+              <button type="button" id="current-page-display" class="active">
+                1
+              </button>
+              <button type="button" id="btn-next-page" disabled>
+                Siguiente
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Layout POS -->
-    <div class="pos-container">
-      
-      <!-- Panel Izquierdo -->
-      <div class="left-panel">
-        
-        <!-- Búsqueda -->
-        <div class="search-card">
-          <label><i class="fa-solid fa-barcode"></i> Productos</label>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" 
-                   id="barcode-input" 
-                   class="form-control" 
-                   placeholder="Ingrese código, nombre o categoría y presione Enter...">
-            
-            <button type="button" id="btn-search" class="btn btn-primary">
-              <i class="fa-solid fa-magnifying-glass"></i> Buscar
-            </button>
-          </div>
-        </div>
-
-        <!-- Controles de la Tabla -->
-        <div class="table-controls">
-          <div>
-            Mostrar 
-            <select id="select-page-size" style="padding: 2px 5px; border-radius: 3px;">
-              <option value="10">10</option>
-              <option value="15" selected>15</option>
-              <option value="25">25</option>
-            </select>
-            registros
-          </div>
-        </div>
-
-        <!-- Tabla de Productos -->
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Código <i class="fa-solid fa-sort"></i></th>
-                <th>Producto <i class="fa-solid fa-sort"></i></th>
-                <th>Stock / Cantidad <i class="fa-solid fa-sort"></i></th>
-                <th>Precio <i class="fa-solid fa-sort"></i></th>
-                <th>Categoría <i class="fa-solid fa-sort"></i></th>
-                <th>Modificar <i class="fa-solid fa-sort"></i></th>
-              </tr>
-            </thead>
-            <tbody id="cart-table-body">
-              <!-- Carga dinámica vía JS -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Paginación -->
-        <div class="table-footer">
-          <div>
-            Mostrando registros del <span id="items-count">0</span> de un total de <span id="items-total-count">0</span> registros
-          </div>
-          <div class="pagination">
-            <button type="button" id="btn-prev-page" disabled>Anterior</button>
-            <button type="button" id="current-page-display" class="active">1</button>
-            <button type="button" id="btn-next-page" disabled>Siguiente</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <!-- <script src="/js/sales.js"></script> -->
-  <script src="/js/sidebar.js"></script>
-  <script src="/js/inventario.js"></script>
-</body>
+    <!-- Scripts -->
+    <!-- <script src="/js/sales.js"></script> -->
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/inventario.js"></script>
+  </body>
+</html>

@@ -26,5 +26,14 @@ public interface ProductoRepositorio extends JpaRepository<Producto,Long> {
     // Buscar por código de barras exacto (útil para el lector)
     Optional<Producto> findByCodigoBarras(String codigoBarras);
 
+  // Búsqueda de faltas que también contempla nombre, código y categoría de forma simultánea
+    @Query("SELECT DISTINCT p FROM Producto p LEFT JOIN p.tiposProducto t WHERE " +
+           "(:query IS NULL OR :query = '' OR " +
+           "LOWER(p.nombre) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+           "LOWER(p.codigoBarras) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+           "LOWER(t) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+           "AND p.falta = :falta")
+    Page<Producto> buscarFaltasConQuery(@Param("query") String query, @Param("falta") boolean falta, Pageable pageable);
+
 }
 
