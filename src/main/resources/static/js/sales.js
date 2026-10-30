@@ -101,7 +101,7 @@ function renderCart() {
   }
 
   let rawTotal = baseTotal * (1 + surchargeRatio) + surchargeAmount;
-  currentFinalTotal = roundToNextTen(rawTotal);
+  currentFinalTotal = Math.ceil(rawTotal / 50) * 50;
 
   document.querySelectorAll(".summary-total-val").forEach((el) => {
     el.innerText = currentFinalTotal;
@@ -351,7 +351,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Al realizar la venta con éxito, devolvemos el foco al escáner
         const barcodeInput = document.getElementById("barcode-input");
-        if (barcodeInput) barcodeInput.focus();
+        if (barcodeInput){
+            barcodeInput.focus();
+            document.getElementById('payment-method').value = 'EFECTIVO';
+           // document.getElementById('received-amount').value = 0 ;
+            
+        }
 
         alert("¡Venta registrada con éxito!");
       } else {
@@ -435,7 +440,52 @@ document.addEventListener("DOMContentLoaded", () => {
       info: true,
     });
   }
-
+  
   // Render inicial
   renderCart();
+});
+
+    document.addEventListener('keydown', function(event){
+      
+    if (event.key === 'F4'){
+      event.preventDefault();
+      document.getElementById('btnRealizarVenta').click();
+    }
+    if (event.key === 'F3'){
+      event.preventDefault();
+      document.getElementById('inputMontoManual').focus();
+
+    }
+    if (event.key === 'F2'){
+      event.preventDefault();
+      document.getElementById('barcode-input').focus();
+    }
+    
+    if (event.key === 'F6'){
+      event.preventDefault();
+      document.getElementById('received-amount').focus();
+    }
+    
+    if (event.key === 'F7'){
+      event.preventDefault();
+      let selectMetodo = document.getElementById('payment-method');
+      selectMetodo.value = 'EFECTIVO';
+      selectMetodo.dispatchEvent(new Event('change'));
+      
+    }    
+    
+    if (event.key === 'F8'){
+      event.preventDefault();
+      let selectMetodo = document.getElementById('payment-method');
+      selectMetodo.value = 'TRANSFERENCIA';
+      selectMetodo.dispatchEvent(new Event('change'));
+    }
+    
+    if (event.key === 'F9'){
+      event.preventDefault();
+      let selectMetodo = document.getElementById('payment-method');
+      selectMetodo.value = 'TARJETA';
+      selectMetodo.dispatchEvent(new Event('change'));
+    }
+    
 });

@@ -28,22 +28,23 @@ public class ProductoControlador {
         return "producto.html";
     }
 
-    // @PostMapping("/guardar")
-    // public String guardarProducto(@ModelAttribute Producto producto) {
-    //     producto.setUltMod(new Date());
+     @PostMapping("/guardar")
+     public String guardarProducto(@ModelAttribute Producto producto) {
+         
+         producto.setUltMod(new Date());
         
-    //     // if (producto.getFalta() == null) {
-    //     //     producto.setFalta(false);
-    //     // }
+         // if (producto.getFalta() == null) {
+           //   producto.setFalta(false);
+          //}
         
-    //     // Si no se marcó ninguna categoría, nos aseguramos que no sea null
-    //     if (producto.getTiposProducto() == null) {
-    //         producto.setTiposProducto(new HashSet<>());
-    //     }
+         // Si no se marcó ninguna categoría, nos aseguramos que no sea null
+         if (producto.getTiposProducto() == null) {
+             producto.setTiposProducto(new HashSet<>());
+         }
 
-    //     productoRepo.save(producto);
-    //     return "redirect:/productos/nuevo?exito=true";
-    // }
+         productoRepo.save(producto);
+         return "redirect:/productos/nuevo?exito=true";
+     }
     // Endpoint GET para mostrar el formulario de edición cargando los datos existentes
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {

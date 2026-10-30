@@ -130,7 +130,7 @@ public class VentaControlador {
             System.err.println("Error parseando fechas: " + e.getMessage());
         }
 
-        if ("1234".equals(passwordAdmin)) {
+        if ("169902".equals(passwordAdmin)) {
 
             MedioPago enumMedioPago = null;
             if (medioPago != null && !medioPago.trim().isEmpty()) {
@@ -184,7 +184,7 @@ public class VentaControlador {
 
         // 3. Ajuste con movimientos de caja (filtrados por fecha si se ingresaron
         // rangos)
-if ("1234".equals(passwordAdmin)) {
+if ("169902".equals(passwordAdmin)) {
     List<MovimientoCaja> listaMovimientos = movimientoRepo.findAll();
     for (MovimientoCaja m : listaMovimientos) {
         
